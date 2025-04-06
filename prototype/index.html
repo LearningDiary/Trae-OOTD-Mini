@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气+OOTD小程序原型</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            -webkit-font-smoothing: antialiased;
+        }
+        .phone-frame {
+            width: 390px; /* iPhone 16 Pro Max width */
+            height: 844px; /* Approximate height */
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 10px solid #1a1a1a;
+            position: relative;
+            background-color: white;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">天气+OOTD小程序原型</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- 首次引导页 -->
+            <div class="flex flex-col items-center">
+                <h2 class="text-xl font-semibold mb-4">首次引导页</h2>
+                <div class="phone-frame">
+                    <iframe src="onboarding.html" class="iframe-container"></iframe>
+                </div>
+                <p class="mt-4 text-gray-600 text-center">用户首次进入时的引导页面，收集用户信息</p>
+            </div>
+            
+            <!-- OOTD页面 -->
+            <div class="flex flex-col items-center">
+                <h2 class="text-xl font-semibold mb-4">OOTD页面</h2>
+                <div class="phone-frame">
+                    <iframe src="ootd.html" class="iframe-container"></iframe>
+                </div>
+                <p class="mt-4 text-gray-600 text-center">展示天气信息和穿搭风格选择</p>
+            </div>
+            
+            <!-- 我的页面 -->
+            <div class="flex flex-col items-center">
+                <h2 class="text-xl font-semibold mb-4">我的页面</h2>
+                <div class="phone-frame">
+                    <iframe src="profile.html" class="iframe-container"></iframe>
+                </div>
+                <p class="mt-4 text-gray-600 text-center">用户个人信息管理</p>
+            </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+            <h2 class="text-2xl font-semibold mb-4">项目说明</h2>
+            <div class="max-w-3xl mx-auto text-left bg-white p-6 rounded-lg shadow">
+                <h3 class="text-lg font-medium mb-2">功能特点</h3>
+                <ul class="list-disc pl-6 mb-4 space-y-1">
+                    <li>首次引导：用户首次进入时，引导用户输入城市、选择性别和填写个人描述</li>
+                    <li>OOTD页面：展示今日天气、近7日天气和今日穿搭风格选择</li>
+                    <li>穿搭推荐：根据用户性别提供不同的穿搭风格选项，生成穿搭建议</li>
+                    <li>个人信息：在"我的"页面中查看和修改个人信息</li>
+                </ul>
+                
+                <h3 class="text-lg font-medium mb-2">使用说明</h3>
+                <ol class="list-decimal pl-6 space-y-1">
+                    <li>首次进入时完成个人信息设置</li>
+                    <li>在OOTD页面查看天气信息并选择今日穿搭风格</li>
+                    <li>点击"生成今日OOTD"按钮获取穿搭建议</li>
+                    <li>通过底部标签栏切换到"我的"页面查看或编辑个人信息</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

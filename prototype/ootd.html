@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOTD - 天气+OOTD小程序</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
+        .ios-status-bar {
+            height: 44px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .tab-bar {
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+        .weather-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .popup-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .popup-content {
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease-out;
+        }
+        .carousel {
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+        }
+        .carousel::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Edge */
+        }
+        .carousel-item {
+            scroll-snap-align: center;
+        }
+        .style-btn {
+            transition: all 0.2s ease;
+            border: 1px solid #E5E7EB;
+        }
+        .style-btn.active {
+            background-color: #4F8EF7;
+            color: white;
+            border-color: #4F8EF7;
+            transform: scale(1.02);
+        }
+        .style-btn:hover:not(.active) {
+            background-color: #F3F4F6;
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4F8EF7, #2F6AD9);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(47, 106, 217, 0.3);
+        }
+        .weather-detail {
+            transition: all 0.3s ease;
+        }
+        .weather-detail:hover {
+            background-color: #F3F4F6;
+            transform: translateY(-1px);
+        }
+        .forecast-item {
+            transition: all 0.2s ease;
+        }
+        .forecast-item:hover {
+            background-color: #F3F4F6;
+            transform: translateX(2px);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .dot {
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            width: 8px;
+            background-color: #4F8EF7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50">
+    <!-- iOS 状态栏 -->
+    <div class="ios-status-bar flex items-center justify-between px-4">
+        <div class="text-sm">9:41</div>
+        <div class="flex space-x-2">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 内容区域 -->
+    <div class="flex-1 overflow-auto p-4 space-y-5">
+        <!-- 今日天气卡片 -->
+        <div class="card p-5">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-lg font-semibold mb-1">今日天气</h2>
+                    <p class="text-sm text-gray-500" id="current-date">2023年10月25日 星期三</p>
+                    <p class="text-sm text-gray-500" id="current-city">北京</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-sun text-yellow-400 weather-icon animate-pulse"></i>
+                    <p class="text-3xl font-bold" id="current-temp">25°C</p>
+                    <p class="text-sm text-gray-600" id="weather-desc">晴朗</p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-3 gap-4">
+                <div class="weather-detail text-center p-2 rounded-lg">
+                    <i class="fas fa-tint text-blue-400 mb-1"></i>
+                    <p class="text-xs text-gray-500">湿度</p>
+                    <p class="font-medium">65%</p>
+                </div>
+                <div class="weather-detail text-center p-2 rounded-lg">
+                    <i class="fas fa-wind text-gray-400 mb-1"></i>
+                    <p class="text-xs text-gray-500">风速</p>
+                    <p class="font-medium">3.5 km/h</p>
+                </div>
+                <div class="weather-detail text-center p-2 rounded-lg">
+                    <i class="fas fa-sun text-orange-400 mb-1"></i>
+                    <p class="text-xs text-gray-500">紫外线</p>
+                    <p class="font-medium">中等</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 近7日天气卡片 -->
+        <div class="card p-5">
+            <h2 class="text-lg font-semibold mb-4">近7日天气</h2>
+            <div class="space-y-3">
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">今天</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-sun text-yellow-400 mr-3"></i>
+                        <span class="text-sm">18°C / 25°C</span>
+                    </div>
+                </div>
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">明天</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-cloud-sun text-gray-400 mr-3"></i>
+                        <span class="text-sm">16°C / 23°C</span>
+                    </div>
+                </div>
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">周五</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-cloud text-gray-400 mr-3"></i>
+                        <span class="text-sm">15°C / 22°C</span>
+                    </div>
+                </div>
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">周六</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-cloud-rain text-blue-400 mr-3"></i>
+                        <span class="text-sm">14°C / 20°C</span>
+                    </div>
+                </div>
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">周日</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-cloud-sun text-gray-400 mr-3"></i>
+                        <span class="text-sm">16°C / 21°C</span>
+                    </div>
+                </div>
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">周一</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-sun text-yellow-400 mr-3"></i>
+                        <span class="text-sm">17°C / 24°C</span>
+                    </div>
+                </div>
+                <div class="forecast-item flex items-center justify-between p-2 rounded-lg">
+                    <p class="text-sm font-medium">周二</p>
+                    <div class="flex-1 mx-4">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-yellow-400" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-sun text-yellow-400 mr-3"></i>
+                        <span class="text-sm">18°C / 25°C</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 今日穿搭风格卡片 -->
+        <div class="card p-5">
+            <h2 class="text-lg font-semibold mb-4">今日穿搭风格</h2>
+            <div class="grid grid-cols-2 gap-3" id="style-options">
+                <!-- 风格选项将根据性别动态生成 -->
+            </div>
+            <button id="generate-ootd" class="btn-primary w-full mt-6 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center">
+                <i class="fas fa-tshirt mr-2"></i>
+                <span>生成今日OOTD</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar flex justify-around items-center">
+        <div id="tab-ootd" class="flex flex-col items-center text-blue-500">
+            <i class="fas fa-tshirt text-xl"></i>
+            <span class="text-xs mt-1">OOTD</span>
+        </div>
+        <div id="tab-profile" class="flex flex-col items-center text-gray-400">
+            <i class="fas fa-user text-xl"></i>
+            <span class="text-xs mt-1">我的</span>
+        </div>
+    </div>
+    
+    <!-- OOTD 弹出层 -->
+    <div id="ootd-popup" class="hidden fixed inset-0 z-40">
+        <div class="popup-overlay absolute inset-0"></div>
+        <div class="popup-content absolute bottom-0 left-0 right-0 bg-white p-6 pt-4 max-h-[90vh] overflow-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">今日OOTD推荐</h3>
+                <button id="close-popup" class="text-gray-400 p-2">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6">
+                <h4 class="text-md font-medium mb-2">穿搭建议</h4>
+                <p class="text-gray-700" id="ootd-advice">根据今天的天气和您选择的风格，建议您穿着轻薄的上衣，搭配舒适的牛仔裤，外搭一件轻便的夹克，既能应对温差变化，又符合您的风格偏好。</p>
+            </div>
+            
+            <div>
+                <h4 class="text-md font-medium mb-3">穿搭示例</h4>
+                <div class="carousel flex overflow-x-auto space-x-4 pb-4">
+                    <div class="carousel-item flex-shrink-0 w-full max-w-xs">
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80" alt="穿搭示例" class="rounded-lg w-full aspect-[3/4] object-cover">
+                        <p class="text-center text-sm mt-2">搭配示例 1</p>
+                    </div>
+                    <div class="carousel-item flex-shrink-0 w-full max-w-xs">
+                        <img src="https://images.unsplash.com/photo-1550614000-4895a10e1bfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80" alt="穿搭示例" class="rounded-lg w-full aspect-[3/4] object-cover">
+                        <p class="text-center text-sm mt-2">搭配示例 2</p>
+                    </div>
+                    <div class="carousel-item flex-shrink-0 w-full max-w-xs">
+                        <img src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80" alt="穿搭示例" class="rounded-lg w-full aspect-[3/4] object-cover">
+                        <p class="text-center text-sm mt-2">搭配示例 3</p>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-2 mt-2" id="carousel-dots">
+                    <div class="dot w-2 h-2 rounded-full bg-blue-500"></div>
+                    <div class="dot w-2 h-2 rounded-full bg-gray-300"></div>
+                    <div class="dot w-2 h-2 rounded-full bg-gray-300"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 穿搭风格数据
+        const styleOptions = {
+            male: ['运动休闲风', '商务精英风', '日韩潮流风', '韩系简约风', '学院风', '街头嘻哈风', '户外机能风', '复古文艺风', '极简主义风', '工装风'],
+            female: ['甜酷风', '温柔风', '学院风', '韩系简约风', '设计师品牌风', '复古文艺风', '小香风', '森女风', '运动休闲风', 'Y2K风']
+        };
+        
+        // 用户数据
+        let userData = {
+            city: '北京',
+            gender: 'male',
+            description: '',
+            selectedStyle: ''
+        };
+        
+        // DOM 元素
+        const styleOptionsContainer = document.getElementById('style-options');
+        const ootdPopup = document.getElementById('ootd-popup');
+        const carousel = document.querySelector('.carousel');
+        const carouselDots = document.getElementById('carousel-dots');
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        
+        // 初始化日期
+        const currentDate = document.getElementById('current-date');
+        const date = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        currentDate.textContent = date.toLocaleDateString('zh-CN', options);
+        
+        // 加载用户数据
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUserData = localStorage.getItem('userData');
+            if (savedUserData) {
+                userData = JSON.parse(savedUserData);
+                document.getElementById('current-city').textContent = userData.city;
+            }
+            
+            // 生成穿搭风格选项
+            generateStyleOptions();
+            
+            // 初始化轮播图
+            initCarousel();
+        });
+        
+        // 生成穿搭风格选项
+        function generateStyleOptions() {
+            styleOptionsContainer.innerHTML = '';
+            const styles = styleOptions[userData.gender];
+            
+            styles.forEach(style => {
+                const button = document.createElement('button');
+                button.className = 'style-btn py-2 px-3 rounded-lg text-center text-sm';
+                button.textContent = style;
+                
+                button.addEventListener('click', function() {
+                    // 移除其他按钮的选中状态
+                    document.querySelectorAll('#style-options button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // 添加当前按钮的选中状态
+                    this.classList.add('active');
+                    userData.selectedStyle = style;
+                });
+                
+                styleOptionsContainer.appendChild(button);
+            });
+        }
+        
+        // 初始化轮播图
+        function initCarousel() {
+            let currentIndex = 0;
+            const dots = document.querySelectorAll('#carousel-dots .dot');
+            
+            // 滚动事件
+            carousel.addEventListener('scroll', function() {
+                const scrollPosition = carousel.scrollLeft;
+                const itemWidth = carouselItems[0].offsetWidth + 16; // 16px for margin
+                currentIndex = Math.round(scrollPosition / itemWidth);
+                
+                // 更新指示点
+                dots.forEach((dot, index) => {
+                    if (index === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            });
+            
+            // 点击指示点切换
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', function() {
+                    const itemWidth = carouselItems[0].offsetWidth + 16;
+                    carousel.scrollTo({
+                        left: itemWidth * index,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }
+        
+        // 生成OOTD事件
+        document.getElementById('generate-ootd').addEventListener('click', function() {
+            if (!userData.selectedStyle) {
+                alert('请先选择一种穿搭风格');
+                return;
+            }
+            
+            // 更新OOTD建议
+            const weatherDesc = document.getElementById('weather-desc').textContent;
+            const temp = document.getElementById('current-temp').textContent;
+            
+            let advice = `根据今天${weatherDesc}的天气（${temp}）和您选择的${userData.selectedStyle}，`;
+            
+            // 根据温度和风格生成不同的建议
+            if (parseInt(temp) > 20) {
+                if (userData.gender === 'male') {
+                    if (userData.selectedStyle === '运动休闲风') {
+                        advice += '建议您穿着轻薄的运动T恤，搭配舒适的运动短裤或休闲裤，鞋子可选择运动鞋或休闲帆布鞋，整体风格轻松活力。';
+                    } else if (userData.selectedStyle === '商务精英风') {
+                        advice += '建议您选择轻薄的衬衫，可卷起袖子增加休闲感，搭配修身西裤，鞋子选择皮鞋或高级感的乐福鞋，保持专业形象的同时不失舒适。';
+                    } else {
+                        advice += '建议您穿着轻薄透气的上衣，搭配舒适的裤装，选择符合您风格的鞋子和配饰，既能应对温暖天气，又能展现个人风格。';
+                    }
+                } else {
+                    if (userData.selectedStyle === '甜酷风') {
+                        advice += '建议您选择宽松的T恤或背心，搭配高腰短裤或半身裙，鞋子可选择运动鞋或厚底鞋，配饰可加入一些个性元素，展现甜美中带有酷感的风格。';
+                    } else if (userData.selectedStyle === '温柔风') {
+                        advice += '建议您选择柔和色调的连衣裙或上衣搭配半身裙，面料可选择雪纺、棉麻等轻薄材质，鞋子可选择平底鞋或低跟鞋，整体风格温柔优雅。';
+                    } else {
+                        advice += '建议您选择轻薄透气的上衣或连衣裙，搭配合适的下装，选择符合您风格的鞋子和配饰，既能应对温暖天气，又能展现个人风格。';
+                    }
+                }
+            } else {
+                if (userData.gender === 'male') {
+                    advice += '建议您穿着长袖上衣，可根据温度变化搭配轻薄外套，下装选择舒适的长裤，鞋子根据整体风格选择，注意保暖的同时展现个人风格。';
+                } else {
+                    advice += '建议您选择长袖上衣或连衣裙，搭配轻薄外套，可选择长裤或搭配厚一些的丝袜的裙装，注意保暖的同时不失时尚感。';
+                }
+            }
+            
+            document.getElementById('ootd-advice').textContent = advice;
+            
+            // 显示弹出层
+            ootdPopup.classList.remove('hidden');
+        });
+        
+        // 关闭弹出层
+        document.getElementById('close-popup').addEventListener('click', function() {
+            ootdPopup.classList.add('hidden');
+        });
+        
+        // 点击弹出层背景关闭
+        document.querySelector('.popup-overlay').addEventListener('click', function() {
+            ootdPopup.classList.add('hidden');
+        });
+        
+        // 标签切换事件
+        document.getElementById('tab-profile').addEventListener('click', function() {
+            window.location.href = 'profile.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气+OOTD小程序原型</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
+        .ios-status-bar {
+            height: 44px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .tab-bar {
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .weather-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .popup-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .popup-content {
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .carousel {
+            scroll-snap-type: x mandatory;
+        }
+        .carousel-item {
+            scroll-snap-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- 首次引导页 -->
+    <div id="onboarding" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6">
+        <h1 class="text-2xl font-bold mb-8">欢迎使用天气+OOTD小程序</h1>
+        
+        <div class="w-full max-w-md space-y-6">
+            <div class="card p-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">您所在的城市</label>
+                <input type="text" id="city-input" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="例如：北京">
+            </div>
+            
+            <div class="card p-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">您的性别</label>
+                <div class="flex space-x-4">
+                    <button id="gender-male" class="flex-1 py-3 border border-gray-300 rounded-lg text-center">男生</button>
+                    <button id="gender-female" class="flex-1 py-3 border border-gray-300 rounded-lg text-center">女生</button>
+                </div>
+            </div>
+            
+            <div class="card p-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">个人描述</label>
+                <textarea id="description-input" class="w-full p-3 border border-gray-300 rounded-lg" rows="3" placeholder="简单描述一下您的穿衣风格偏好..."></textarea>
+            </div>
+            
+            <button id="start-app" class="w-full bg-blue-500 text-white font-medium py-3 px-4 rounded-lg">开始使用</button>
+        </div>
+    </div>
+
+    <!-- 主应用界面 -->
+    <div id="main-app" class="hidden flex-1 flex flex-col">
+        <!-- iOS 状态栏 -->
+        <div class="ios-status-bar flex items-center justify-between px-4">
+            <div class="text-sm">9:41</div>
+            <div class="flex space-x-2">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-auto">
+            <!-- OOTD 页面 -->
+            <div id="ootd-tab" class="p-4 space-y-6">
+                <!-- 今日天气卡片 -->
+                <div class="card p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-lg font-semibold mb-1">今日天气</h2>
+                            <p class="text-sm text-gray-500" id="current-date">2023年10月25日 星期三</p>
+                            <p class="text-sm text-gray-500" id="current-city">北京</p>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-sun text-yellow-400 weather-icon"></i>
+                            <p class="text-3xl font-bold" id="current-temp">25°C</p>
+                            <p class="text-sm text-gray-600" id="weather-desc">晴朗</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <p class="text-xs text-gray-500">湿度</p>
+                            <p class="font-medium">65%</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-gray-500">风速</p>
+                            <p class="font-medium">3.5 km/h</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-gray-500">紫外线</p>
+                            <p class="font-medium">中等</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 近7日天气卡片 -->
+                <div class="card p-5">
+                    <h2 class="text-lg font-semibold mb-4">近7日天气</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">今天</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-sun text-yellow-400 mr-3"></i>
+                                <span class="text-sm">18°C / 25°C</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">明天</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-cloud-sun text-gray-400 mr-3"></i>
+                                <span class="text-sm">16°C / 23°C</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">周五</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-cloud text-gray-400 mr-3"></i>
+                                <span class="text-sm">15°C / 22°C</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">周六</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-cloud-rain text-blue-400 mr-3"></i>
+                                <span class="text-sm">14°C / 20°C</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">周日</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-cloud-sun text-gray-400 mr-3"></i>
+                                <span class="text-sm">16°C / 21°C</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">周一</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-sun text-yellow-400 mr-3"></i>
+                                <span class="text-sm">17°C / 24°C</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm">周二</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-sun text-yellow-400 mr-3"></i>
+                                <span class="text-sm">18°C / 25°C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 今日穿搭风格卡片 -->
+                <div class="card p-5">
+                    <h2 class="text-lg font-semibold mb-4">今日穿搭风格</h2>
+                    <div class="grid grid-cols-2 gap-3" id="style-options">
+                        <!-- 风格选项将根据性别动态生成 -->
+                    </div>
+                    <button id="generate-ootd" class="w-full mt-6 bg-blue-500 text-white font-medium py-3 px-4 rounded-lg">生成今日OOTD</button>
+                </div>
+            </div>
+            
+            <!-- 我的页面 -->
+            <div id="profile-tab" class="hidden p-4 space-y-6">
+                <div class="card p-5">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-gray-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold" id="profile-city">北京</h2>
+                            <p class="text-sm text-gray-500" id="profile-gender">男生</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card p-5">
+                    <h3 class="text-lg font-semibold mb-3">个人描述</h3>
+                    <p class="text-gray-700" id="profile-description">喜欢简约风格，偏好舒适的休闲装，平时以黑白灰为主。</p>
+                </div>
+                
+                <div class="card p-5">
+                    <h3 class="text-lg font-semibold mb-3">编辑信息</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">城市</label>
+                            <input type="text" id="edit-city" class="w-full p-2 border border-gray-300 rounded-lg" value="北京">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">性别</label>
+                            <div class="flex space-x-4">
+                                <button id="edit-gender-male" class="flex-1 py-2 border border-gray-300 rounded-lg text-center">男生</button>
+                                <button id="edit-gender-female" class="flex-1 py-2 border border-gray-300 rounded-lg text-center">女生</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">个人描述</label>
+                            <textarea id="edit-description" class="w-full p-2 border border-gray-300 rounded-lg" rows="3">喜欢简约风格，偏好舒适的休闲装，平时以黑白灰为主。</textarea>
+                        </div>
+                        <button id="save-profile" class="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-lg">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar flex justify-around items-center">
+            <div id="tab-ootd" class="flex flex-col items-center text-blue-500">
+                <i class="fas fa-tshirt text-xl"></i>
+                <span class="text-xs mt-1">OOTD</span>
+            </div>
+            <div id="tab-profile" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs mt-1">我的</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- OOTD 弹出层 -->
+    <div id="ootd-popup" class="hidden fixed inset-0 z-40">
+        <div class="popup-overlay absolute inset-0"></div>
+        <div class="popup-content absolute bottom-0 left-0 right-0 bg-white p-6 pt-4 max-h-[90vh] overflow-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">今日OOTD推荐</h3>
+                <button id="close-popup" class="text-gray-400">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6">
+                <h4 class="text-md font-medium mb-2">穿搭建议</h4>
+                <p class="text-gray-700" id="ootd-advice">根据今天的天气和您选择的风格，建议您穿着轻薄的上衣，搭配舒适的牛仔裤，外搭一件轻便的夹克，既能应对温差变化，又符合您的风格偏好。</p>
+            </div>
+            
+            <div>
+                <h4 class="text-md font-medium mb-3">穿搭示例</h4>
+                <div class="carousel flex overflow-x-auto space-x-4 pb-4">
+                    <div class="carousel-item flex-shrink-0 w-full max-w-xs">
+                        <div class="bg-gray-200 rounded-lg aspect-[3/4] flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                        </div>
+                        <p class="text-center text-sm mt-2">搭配示例 1</p>
+                    </div>
+                    <div class="carousel-item flex-shrink-0 w-full max-w-xs">
+                        <div class="bg-gray-200 rounded-lg aspect-[3/4] flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                        </div>
+                        <p class="text-center text-sm mt-2">搭配示例 2</p>
+                    </div>
+                    <div class="carousel-item flex-shrink-0 w-full max-w-xs">
+                        <div class="bg-gray-200 rounded-lg aspect-[3/4] flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                        </div>
+                        <p class="text-center text-sm mt-2">搭配示例 3</p>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-2 mt-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                    <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 穿搭风格数据
+        const styleOptions = {
+            male: ['运动休闲风', '商务精英风', '日韩潮流风', '韩系简约风', '学院风', '街头嘻哈风', '户外机能风', '复古文艺风', '极简主义风', '工装风'],
+            female: ['甜酷风', '温柔风', '学院风', '韩系简约风', '设计师品牌风', '复古文艺风', '小香风', '森女风', '运动休闲风', 'Y2K风']
+        };
+        
+        // 用户数据
+        let userData = {
+            city: '',
+            gender: '',
+            description: '',
+            selectedStyle: ''
+        };
+        
+        // DOM 元素
+        const onboarding = document.getElementById('onboarding');
+        const mainApp = document.getElementById('main-app');
+        const ootdTab = document.getElementById('ootd-tab');
+        const profileTab = document.getElementById('profile-tab');
+        const tabOotd = document.getElementById('tab-ootd');
+        const tabProfile = document.getElementById('tab-profile');
+        const styleOptionsContainer = document.getElementById('style-options');
+        const ootdPopup = document.getElementById('ootd-popup');
+        
+        // 初始化日期
+        const currentDate = document.getElementById('current-date');
+        const date = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        currentDate.textContent = date.toLocaleDateString('zh-CN', options);
+        
+        // 首次引导页事件
+        document.getElementById('gender-male').addEventListener('click', function() {
+            this.classList.add('bg-blue-500', 'text-white');
+            document.getElementById('gender-female').classList.remove('bg-blue-500', 'text-white');
+            userData.gender = 'male';
+        });
+        
+        document.getElementById('gender-female').addEventListener('click', function() {
+            this.classList.add('bg-blue-500', 'text-white');
+            document.getElementById('gender-male').classList.remove('bg-blue-500', 'text-white');
+            userData.gender = 'female';
+        });
+        
+        document.getElementById('start-app').addEventListener('click', function() {
+            userData.city = document.getElementById('city-input').value || '北京';
+            userData.description = document.getElementById('description-input').value || '喜欢简约风格，偏好舒适的休闲装。';
+            
+            if (!userData.gender) {
+                userData.gender = 'male'; // 默认值
+            }
+            
+            // 更新个人资料页面
+            document.getElementById('profile-city').textContent = userData.city;
+            document.getElementById('profile-gender').textContent = userData.gender === 'male' ? '男生' : '女生';
+            document.getElementById('profile-description').textContent = userData.description;
+            document.getElementById('edit-city').value = userData.city;
+            document.getElementById('edit-description').value = userData.description;
+            
+            if (userData.gender === 'male') {
+                document.getElementById('edit-gender-male').classList.add('bg-blue-500', 'text-white');
+            } else {
+                document.getElementById('edit-gender-female').classList.add('bg-blue-500', 'text-white');
+            }
+            
+            // 更新天气页面
+            document.getElementById('current-city').textContent = userData.city;
+            
+            // 生成穿搭风格选项
+            generateStyleOptions();
+            
+            // 隐藏引导页，显示主应用
+            onboarding.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+        });
+        
+        // 标签切换事件
+        tabOotd.addEventListener('click', function() {
+            ootdTab.classList.remove('hidden');
+            profileTab.classList.add('hidden');
+            tabOotd.classList.add('text-blue-500');
+            tabOotd.classList.remove('text-gray-400');
+            tabProfile.classList.add('text-gray-400');
+            tabProfile.classList.remove('text-blue-500');
+        });
+        
+        tabProfile.addEventListener('click', function() {
+            profileTab.classList.remove('hidden');
+            ootdTab.classList.add('hidden');
+            tabProfile.classList.add('text-blue-500');
+            tabProfile.classList.remove('text-gray-400');
+            tabOotd.classList.add('text-gray-400');
+            tabOotd.classList.remove('text-blue-500');
+        });
+        
+        // 生成穿搭风格选项
+        function generateStyleOptions() {
+            styleOptionsContainer.innerHTML = '';
+            const styles = styleOptions[userData.gender];
+            
+            styles.forEach(style => {
+                const button = document.createElement('button');
+                button.className = 'py-2 px-3 border border-gray-300 rounded-lg text-center text-sm';
+                button.textContent = style;
+                
+                button.addEventListener('click', function() {
+                    // 移除其他按钮的选中状态
+                    document.querySelectorAll('#style-options button').forEach(btn => {
+                        btn.classList.remove('bg-blue-500', 'text-white');
+                    });
+                    
+                    // 添加当前按钮的选中状态
+                    this.classList.add('bg-blue-500', 'text-white');
+                    userData.selectedStyle = style;
+                });
+                
+                styleOptionsContainer.appendChild(button);
+            });
+        }
+        
+        // 生成OOTD事件
+        document.getElementById('generate-ootd').addEventListener('click', function() {
+            if (!userData.selectedStyle) {
+                alert('请先选择一种穿搭风格');
+                return;
+            }
+            
+            // 更新OOTD建议
+            document.getElementById('ootd-advice').textContent = `根据今天${document.getElementById('weather-desc').textContent}的天气和您选择的${userData.selectedStyle}，建议您穿着轻薄的上衣，搭配舒适的牛仔裤，外搭一件轻便的夹克，既能应对温差变化，又符合您的风格偏好。`;
+            
+            // 显示弹出层
+            ootdPopup.classList.remove('hidden');
+        });
+        
+        // 关闭弹出层
+        document.getElementById('close-popup').addEventListener('click', function() {
+            ootdPopup.classList.add('hidden');
+        });
+        
+        // 点击弹出层背景关闭
+        document.querySelector('.popup-overlay').addEventListener('click', function() {
+            ootdPopup.classList.add('hidden');
+        });
+        
+        // 保存个人资料
+        document.getElementById('save-profile').addEventListener('click', function() {
+            userData.city = document.getElementById('edit-city').value;
+            userData.description = document.getElementById('edit-description').value;
+            
+            // 更新个人资料页面
+            document.getElementById('profile-city').textContent = userData.city;
+            document.getElementById('profile-description').textContent = userData.description;
+            
+            // 更新天气页面
+            document.getElementById('current-city').textContent = userData.city;
+            
+            alert('保存成功');
+        });
+        
+        // 编辑性别
+        document.getElementById('edit-gender-male').addEventListener('click', function() {
+            this.classList.add('bg-blue-500', 'text-white');
+            document.getElementById('edit-gender-female').classList.remove('bg-blue-500', 'text-white');
+            userData.gender = 'male';
+            document.getElementById('profile-gender').textContent = '男生';
+            generateStyleOptions();
+        });
+        
+        document.getElementById('edit-gender-female').addEventListener('click', function() {
+            this.classList.add('bg-blue-500', 'text-white');
+            document.getElementById('edit-gender-male').classList.remove('bg-blue-500', 'text-white');
+            userData.gender = 'female';
+            document.getElementById('profile-gender').textContent = '女生';
+            generateStyleOptions();
+        });
+    </script>
+</body>
+</html>
