@@ -185,7 +185,7 @@ Component({
     
     // 导航到个人页面
     navigateToProfile() {
-      // 使用switchTab跳转到tabBar页面
+      // 使用switchTab跳转到profile页面
       wx.switchTab({
         url: '/pages/profile/profile'
       });

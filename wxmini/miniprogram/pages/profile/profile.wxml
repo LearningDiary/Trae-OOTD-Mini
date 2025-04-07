@@ -82,7 +82,7 @@
   </view>
 </view>
 
-<!-- 移除自定义底部标签栏，使用系统tabBar -->
+<!-- 底部标签栏由app.json的tabBar配置提供，样式已在app.wxss中引入 -->
 
 <!-- 提示框 -->
 <view class="toast {{showToast ? 'show' : ''}}">

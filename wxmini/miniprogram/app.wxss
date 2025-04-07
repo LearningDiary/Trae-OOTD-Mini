@@ -1,4 +1,7 @@
 /**app.wxss**/
+/* 引入自定义底部导航栏样式 */
+@import "./style/custom-tab-bar.wxss";
+
 .container {
   height: 100%;
   display: flex;
@@ -7,4 +10,4 @@
   justify-content: space-between;
   padding: 200rpx 0;
   box-sizing: border-box;
-} 
+}

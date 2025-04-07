@@ -1,15 +1,6 @@
 <!--index.wxml-->
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container-ootd">
-    <!-- 状态栏 -->
-    <view class="status-bar">
-      <text class="status-time">9:41</text>
-      <view class="status-icons">
-        <text>📶</text>
-        <text>📡</text>
-        <text>🔋</text>
-      </view>
-    </view>
     
     <!-- 内容区域 -->
     <view class="content-area">
@@ -88,17 +79,7 @@
       </view>
     </view>
     
-    <!-- 底部标签栏 -->
-    <view class="tab-bar">
-      <view class="tab-item active">
-        <text class="tab-icon">👔</text>
-        <text class="tab-text">OOTD</text>
-      </view>
-      <view class="tab-item" bindtap="navigateToProfile">
-        <text class="tab-icon">👤</text>
-        <text class="tab-text">我的</text>
-      </view>
-    </view>
+    <!-- 底部标签栏由app.json的tabBar配置提供 -->
     
     <!-- OOTD 弹出层 -->
     <view class="popup {{showPopup ? 'show' : ''}}">

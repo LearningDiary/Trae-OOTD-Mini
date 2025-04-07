@@ -48,7 +48,7 @@ page {
 .content-area {
   flex: 1;
   padding: 20rpx;
-  margin-top: 88rpx;
+  margin-top: 0;
   margin-bottom: 100rpx;
   display: flex;
   flex-direction: column;
