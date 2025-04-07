@@ -3,60 +3,359 @@ page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-}
-.scrollarea {
-  flex: 1;
-  overflow-y: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
 }
 
-.userinfo {
+.scrollarea {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.container-ootd {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  position: relative;
+}
+
+/* 状态栏样式 */
+.status-bar {
+  height: 88rpx;
+  background-color: rgba(255, 255, 255, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20rpx;
+}
+
+.status-time {
+  font-size: 28rpx;
+}
+
+.status-icons {
+  display: flex;
+  gap: 10rpx;
+}
+
+/* 内容区域样式 */
+.content-area {
+  flex: 1;
+  padding: 20rpx;
+  margin-top: 88rpx;
+  margin-bottom: 100rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+/* 卡片通用样式 */
+.card {
+  background-color: white;
+  border-radius: 32rpx;
+  box-shadow: 0 8rpx 12rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 天气卡片样式 */
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.weather-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.weather-subtitle {
+  font-size: 24rpx;
+  color: #888;
+  margin-bottom: 6rpx;
+}
+
+.weather-info {
+  text-align: center;
+}
+
+.weather-icon {
+  font-size: 80rpx;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.weather-temp {
+  font-size: 60rpx;
+  font-weight: bold;
+  display: block;
+}
+
+.weather-desc {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.weather-details {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #f0f0f0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.weather-detail-item {
+  text-align: center;
+  padding: 10rpx;
+  border-radius: 16rpx;
+}
+
+.detail-icon {
+  font-size: 40rpx;
+  margin-bottom: 6rpx;
+  display: block;
+}
+
+.detail-label {
+  font-size: 24rpx;
+  color: #888;
+  display: block;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+/* 天气预报样式 */
+.forecast-list {
+  margin-top: 20rpx;
+}
+
+.forecast-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10rpx;
+  margin-bottom: 15rpx;
+  border-radius: 16rpx;
+}
+
+.forecast-day {
+  font-size: 28rpx;
+  font-weight: 500;
+  width: 80rpx;
+}
+
+.forecast-bar {
+  flex: 1;
+  margin: 0 20rpx;
+}
+
+.forecast-bar-bg {
+  height: 6rpx;
+  background-color: #eee;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.forecast-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #4F8EF7, #FFD166);
+}
+
+.forecast-temp {
+  display: flex;
+  align-items: center;
+}
+
+.forecast-icon {
+  margin-right: 10rpx;
+  font-size: 32rpx;
+}
+
+.forecast-temp-text {
+  font-size: 24rpx;
+}
+
+/* 穿搭风格样式 */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin: 20rpx 0 30rpx;
+}
+
+.style-btn {
+  padding: 16rpx 20rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  border: 2rpx solid #E5E7EB;
+  font-size: 28rpx;
+  background-color: #fff;
+}
+
+.style-btn.active {
+  background-color: #4F8EF7;
+  color: white;
+  border-color: #4F8EF7;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4F8EF7, #2F6AD9);
+  color: white;
+  font-size: 32rpx;
+  font-weight: 500;
+  padding: 20rpx 0;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon {
+  margin-right: 10rpx;
+}
+
+/* 底部标签栏样式 */
+.tab-bar {
+  height: 100rpx;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-top: 2rpx solid rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-around;
+}
+
+.tab-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
-  width: 80%;
+  justify-content: center;
+  color: #888;
 }
 
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.tab-item.active {
+  color: #4F8EF7;
 }
 
-.usermotto {
-  margin-top: 200px;
+.tab-icon {
+  font-size: 40rpx;
+  margin-bottom: 4rpx;
 }
 
-.avatar-wrapper {
-  padding: 0;
-  width: 56px !important;
-  border-radius: 8px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+.tab-text {
+  font-size: 24rpx;
 }
 
-.avatar {
-  display: block;
-  width: 56px;
-  height: 56px;
+/* 弹出层样式 */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-.nickname-wrapper {
+.popup.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 40rpx 30rpx;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+
+.popup.show .popup-content {
+  transform: translateY(0);
+}
+
+.popup-header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.popup-title {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.popup-close {
+  font-size: 36rpx;
+  color: #888;
+}
+
+.popup-section {
+  margin-bottom: 30rpx;
+}
+
+.popup-section-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.popup-advice {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.outfit-swiper {
+  height: 600rpx;
+}
+
+.outfit-image {
   width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  border-top: .5px solid rgba(0, 0, 0, 0.1);
-  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
-  color: black;
+  height: 500rpx;
+  border-radius: 16rpx;
 }
 
-.nickname-label {
-  width: 105px;
-}
-
-.nickname-input {
-  flex: 1;
+.outfit-caption {
+  display: block;
+  text-align: center;
+  font-size: 28rpx;
+  margin-top: 10rpx;
+  color: #666;
 }

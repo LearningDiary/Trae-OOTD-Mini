@@ -1,27 +1,129 @@
 <!--index.wxml-->
 <scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
+  <view class="container-ootd">
+    <!-- 状态栏 -->
+    <view class="status-bar">
+      <text class="status-time">9:41</text>
+      <view class="status-icons">
+        <text>📶</text>
+        <text>📡</text>
+        <text>🔋</text>
+      </view>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+    
+    <!-- 内容区域 -->
+    <view class="content-area">
+      <!-- 今日天气卡片 -->
+      <view class="card">
+        <view class="weather-header">
+          <view>
+            <text class="weather-title">今日天气</text>
+            <view class="weather-subtitle">
+              <text id="current-date">{{currentDate}}</text>
+            </view>
+            <view class="weather-subtitle">
+              <text id="current-city">{{userData.city || '北京'}}</text>
+            </view>
+          </view>
+          <view class="weather-info">
+            <text class="weather-icon">☀️</text>
+            <text class="weather-temp" id="current-temp">{{currentTemp || '25°C'}}</text>
+            <text class="weather-desc" id="weather-desc">{{weatherDesc || '晴朗'}}</text>
+          </view>
+        </view>
+        <view class="weather-details">
+          <view class="weather-detail-item">
+            <text class="detail-icon">💧</text>
+            <text class="detail-label">湿度</text>
+            <text class="detail-value">65%</text>
+          </view>
+          <view class="weather-detail-item">
+            <text class="detail-icon">🌬️</text>
+            <text class="detail-label">风速</text>
+            <text class="detail-value">3.5 km/h</text>
+          </view>
+          <view class="weather-detail-item">
+            <text class="detail-icon">☀️</text>
+            <text class="detail-label">紫外线</text>
+            <text class="detail-value">中等</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 近7日天气卡片 -->
+      <view class="card">
+        <text class="weather-title">近7日天气</text>
+        <view class="forecast-list">
+          <view class="forecast-item" wx:for="{{forecastData}}" wx:key="day">
+            <text class="forecast-day">{{item.day}}</text>
+            <view class="forecast-bar">
+              <view class="forecast-bar-bg">
+                <view class="forecast-bar-fill" style="width: {{item.tempPercent}}%"></view>
+              </view>
+            </view>
+            <view class="forecast-temp">
+              <text class="forecast-icon">{{item.icon}}</text>
+              <text class="forecast-temp-text">{{item.temp}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 今日穿搭风格卡片 -->
+      <view class="card">
+        <text class="weather-title">今日穿搭风格</text>
+        <view class="style-grid">
+          <view class="style-btn {{item.active ? 'active' : ''}}" 
+                wx:for="{{styleOptions}}" 
+                wx:key="name"
+                bindtap="selectStyle" 
+                data-index="{{index}}">
+            <text>{{item.name}}</text>
+          </view>
+        </view>
+        <button class="btn-primary" bindtap="generateOOTD">
+          <text class="btn-icon">👔</text>
+          <text>生成今日OOTD</text>
+        </button>
+      </view>
+    </view>
+    
+    <!-- 底部标签栏 -->
+    <view class="tab-bar">
+      <view class="tab-item active">
+        <text class="tab-icon">👔</text>
+        <text class="tab-text">OOTD</text>
+      </view>
+      <view class="tab-item" bindtap="navigateToProfile">
+        <text class="tab-icon">👤</text>
+        <text class="tab-text">我的</text>
+      </view>
+    </view>
+    
+    <!-- OOTD 弹出层 -->
+    <view class="popup {{showPopup ? 'show' : ''}}">
+      <view class="popup-overlay" bindtap="closePopup"></view>
+      <view class="popup-content">
+        <view class="popup-header">
+          <text class="popup-title">今日OOTD推荐</text>
+          <text class="popup-close" bindtap="closePopup">✖</text>
+        </view>
+        
+        <view class="popup-section">
+          <text class="popup-section-title">穿搭建议</text>
+          <text class="popup-advice">{{ootdAdvice}}</text>
+        </view>
+        
+        <view class="popup-section">
+          <text class="popup-section-title">穿搭示例</text>
+          <swiper class="outfit-swiper" indicator-dots="{{true}}" autoplay="{{false}}">
+            <swiper-item wx:for="{{outfitExamples}}" wx:key="id">
+              <image src="{{item.image}}" mode="aspectFill" class="outfit-image"></image>
+              <text class="outfit-caption">{{item.caption}}</text>
+            </swiper-item>
+          </swiper>
+        </view>
+      </view>
     </view>
   </view>
 </scroll-view>

@@ -1,0 +1,90 @@
+<!-- 内容区域 -->
+<view class="container">
+  <!-- 个人信息卡片 -->
+  <view class="card p-5">
+    <view class="flex items-center space-x-4 mb-4">
+      <view class="avatar w-16 h-16 rounded-full flex items-center justify-center text-white">
+        <text class="iconfont icon-user text-2xl"></text>
+      </view>
+      <view class="flex-1">
+        <view class="text-xl font-semibold" id="profile-city">{{userData.city}}</view>
+        <view class="text-sm text-gray-500" id="profile-gender">{{userData.gender === 'male' ? '男生' : '女生'}}</view>
+      </view>
+      <button id="toggle-edit" class="text-blue-500" bindtap="toggleEdit">
+        <text class="iconfont {{isEditing ? 'icon-close' : 'icon-edit'}}"></text>
+      </button>
+    </view>
+    
+    <view class="border-t border-gray-100 pt-4 mb-3">
+      <view class="text-lg font-semibold mb-2">个人描述</view>
+      <view class="text-gray-700" id="profile-description">{{userData.description}}</view>
+    </view>
+    
+    <view id="edit-section" class="edit-section {{isEditing ? 'active' : ''}} space-y-4">
+      <view>
+        <view class="block text-sm font-medium text-gray-700 mb-1">城市</view>
+        <view class="relative">
+          <text class="iconfont icon-location absolute left-3 top-3 text-gray-400"></text>
+          <input type="text" id="edit-city" class="input-field w-full p-2 pl-10 border border-gray-300 rounded-lg" value="{{userData.city}}" bindinput="onCityInput" />
+        </view>
+      </view>
+      <view>
+        <view class="block text-sm font-medium text-gray-700 mb-1">性别</view>
+        <view class="flex space-x-4">
+          <button id="edit-gender-male" class="gender-btn flex-1 py-2 border border-gray-300 rounded-lg text-center {{userData.gender === 'male' ? 'active' : ''}}" bindtap="selectMale">男生</button>
+          <button id="edit-gender-female" class="gender-btn flex-1 py-2 border border-gray-300 rounded-lg text-center {{userData.gender === 'female' ? 'active' : ''}}" bindtap="selectFemale">女生</button>
+        </view>
+      </view>
+      <view>
+        <view class="block text-sm font-medium text-gray-700 mb-1">个人描述</view>
+        <textarea id="edit-description" class="input-field w-full p-2 border border-gray-300 rounded-lg" value="{{userData.description}}" bindinput="onDescriptionInput"></textarea>
+      </view>
+      <button id="save-profile" class="btn-primary w-full text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center" bindtap="saveProfile">
+        <text class="iconfont icon-save mr-2"></text>
+        <text>保存</text>
+      </button>
+    </view>
+  </view>
+  
+  <!-- 其他设置卡片 -->
+  <view class="card p-5">
+    <view class="text-lg font-semibold mb-4">其他设置</view>
+    <view class="space-y-3">
+      <view class="flex justify-between items-center p-2 hover-bg-gray-50 rounded-lg">
+        <view class="flex items-center">
+          <text class="iconfont icon-notification text-blue-500 mr-3"></text>
+          <text>消息通知</text>
+        </view>
+        <text class="iconfont icon-right text-gray-400"></text>
+      </view>
+      <view class="flex justify-between items-center p-2 hover-bg-gray-50 rounded-lg">
+        <view class="flex items-center">
+          <text class="iconfont icon-shield text-blue-500 mr-3"></text>
+          <text>隐私设置</text>
+        </view>
+        <text class="iconfont icon-right text-gray-400"></text>
+      </view>
+      <view class="flex justify-between items-center p-2 hover-bg-gray-50 rounded-lg">
+        <view class="flex items-center">
+          <text class="iconfont icon-help text-blue-500 mr-3"></text>
+          <text>帮助与反馈</text>
+        </view>
+        <text class="iconfont icon-right text-gray-400"></text>
+      </view>
+      <view class="flex justify-between items-center p-2 hover-bg-gray-50 rounded-lg">
+        <view class="flex items-center">
+          <text class="iconfont icon-info text-blue-500 mr-3"></text>
+          <text>关于我们</text>
+        </view>
+        <text class="iconfont icon-right text-gray-400"></text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 移除自定义底部标签栏，使用系统tabBar -->
+
+<!-- 提示框 -->
+<view class="toast {{showToast ? 'show' : ''}}">
+  {{toastMessage}}
+</view>

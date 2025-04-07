@@ -1,12 +1,33 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/profile/profile"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "天气+OOTD小程序",
     "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#4F8EF7",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "OOTD",
+        "iconPath": "images/icon-tshirt.png",
+        "selectedIconPath": "images/icon-tshirt-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/icon-user.png",
+        "selectedIconPath": "images/icon-user-active.png"
+      }
+    ]
   },
   "style": "v2",
   "componentFramework": "glass-easel",
