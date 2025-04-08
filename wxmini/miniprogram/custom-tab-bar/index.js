@@ -6,13 +6,13 @@ Component({
     selectedColor: "#4F8EF7",
     list: [{
       pagePath: "/pages/index/index",
-      iconPath: "/images/icon-tshirt.svg",
-      selectedIconPath: "/images/icon-tshirt-active.svg",
+      iconPath: "/images/icon-tshirt.png",
+      selectedIconPath: "/images/icon-tshirt-active.png",
       text: "OOTD"
     }, {
       pagePath: "/pages/profile/profile",
-      iconPath: "/images/icon-user.svg",
-      selectedIconPath: "/images/icon-user-active.svg",
+      iconPath: "/images/icon-user.png",
+      selectedIconPath: "/images/icon-user-active.png",
       text: "我的"
     }]
   },
