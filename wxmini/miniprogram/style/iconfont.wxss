@@ -47,7 +47,15 @@
   content: "\e7eb";
 }
 
+.icon-chevron-right:before {
+  content: "\e7eb";
+}
+
 .icon-shield:before {
+  content: "\e7cf";
+}
+
+.icon-shield-alt:before {
   content: "\e7cf";
 }
 
@@ -55,6 +63,14 @@
   content: "\e752";
 }
 
+.icon-question-circle:before {
+  content: "\e752";
+}
+
 .icon-info:before {
+  content: "\e7dc";
+}
+
+.icon-info-circle:before {
   content: "\e7dc";
 }
