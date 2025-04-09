@@ -95,6 +95,10 @@ Component({
         this.setData({
           userData: JSON.parse(userData)
         });
+      } else {
+        wx.navigateTo({
+          url: '/pages/onboarding/onboarding'
+        });
       }
     },
     

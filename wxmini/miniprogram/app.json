@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/logs/logs",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/onboarding/onboarding"
   ],
   "window": {
     "navigationBarTextStyle": "black",
