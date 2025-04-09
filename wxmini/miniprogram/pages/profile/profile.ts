@@ -1,4 +1,4 @@
-// profile.ts
+// pages/profile/profile.ts
 
 Page({
   data: {

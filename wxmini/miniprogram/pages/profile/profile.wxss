@@ -1,4 +1,4 @@
-/* profile.wxss */
+/* pages/profile/profile.wxss */
 
 /* 引入字体图标 */
 @import "../../style/iconfont.wxss";
@@ -14,7 +14,7 @@ page {
 
 .container {
   height: auto;
-  padding: 16rpx;
+  padding: 20rpx;
   margin-bottom: 100rpx;
   justify-content: flex-start;
 }
@@ -24,12 +24,18 @@ page {
   border-radius: 32rpx;
   box-shadow: 0 8rpx 12rpx rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  margin-bottom: 20rpx;
-  padding: 20rpx;
+  margin-bottom: 30rpx;
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 12rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
 .p-5 {
-  padding: 20rpx;
+  padding: 30rpx;
 }
 
 .flex {
@@ -40,10 +46,6 @@ page {
   flex: 1;
 }
 
-.flex-col {
-  flex-direction: column;
-}
-
 .items-center {
   align-items: center;
 }
@@ -52,120 +54,78 @@ page {
   justify-content: center;
 }
 
-.justify-around {
-  justify-content: space-around;
-}
-
 .justify-between {
   justify-content: space-between;
 }
 
 .space-x-4 > view:not(:first-child),
 .space-x-4 > button:not(:first-child) {
-  margin-left: 16rpx;
+  margin-left: 20rpx;
 }
 
 .space-y-3 > view:not(:first-child) {
-  margin-top: 12rpx;
+  margin-top: 15rpx;
 }
 
 .space-y-4 > view:not(:first-child),
 .space-y-4 > button:not(:first-child) {
-  margin-top: 16rpx;
+  margin-top: 20rpx;
 }
 
 .mb-1 {
-  margin-bottom: 4rpx;
+  margin-bottom: 5rpx;
 }
 
 .mb-2 {
-  margin-bottom: 8rpx;
+  margin-bottom: 10rpx;
 }
 
 .mb-3 {
-  margin-bottom: 12rpx;
+  margin-bottom: 15rpx;
 }
 
 .mb-4 {
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
 }
 
 .mr-2 {
-  margin-right: 8rpx;
+  margin-right: 10rpx;
 }
 
 .mr-3 {
-  margin-right: 12rpx;
+  margin-right: 15rpx;
 }
 
 .mt-1 {
-  margin-top: 4rpx;
+  margin-top: 5rpx;
 }
 
-.pt-4 {
-  padding-top: 16rpx;
+.w-16 {
+  width: 80rpx;
 }
 
-.p-2 {
-  padding: 8rpx;
-}
-
-.px-4 {
-  padding-left: 16rpx;
-  padding-right: 16rpx;
-}
-
-.py-2 {
-  padding-top: 8rpx;
-  padding-bottom: 8rpx;
-}
-
-.pl-10 {
-  padding-left: 40rpx;
+.h-16 {
+  height: 80rpx;
 }
 
 .w-full {
   width: 100%;
 }
 
-.w-16 {
-  width: 64rpx;
+.rounded-full {
+  border-radius: 50%;
 }
 
-.h-16 {
-  height: 64rpx;
-}
-
-.text-xs {
-  font-size: 24rpx;
-}
-
-.text-sm {
-  font-size: 28rpx;
-}
-
-.text-lg {
-  font-size: 36rpx;
-}
-
-.text-xl {
-  font-size: 40rpx;
-}
-
-.text-2xl {
-  font-size: 48rpx;
-}
-
-.font-medium {
-  font-weight: 500;
-}
-
-.font-semibold {
-  font-weight: 600;
+.rounded-lg {
+  border-radius: 16rpx;
 }
 
 .text-white {
   color: white;
+}
+
+.text-blue-500 {
+  color: #4F8EF7;
 }
 
 .text-gray-400 {
@@ -180,24 +140,38 @@ page {
   color: #374151;
 }
 
-.text-blue-500 {
-  color: #4F8EF7;
+.text-2xl {
+  font-size: 48rpx;
 }
 
-.bg-gray-50 {
-  background-color: #f9fafb;
+.text-xl {
+  font-size: 36rpx;
 }
 
-.hover-bg-gray-50:active {
-  background-color: #f9fafb;
+.text-lg {
+  font-size: 32rpx;
+}
+
+.text-sm {
+  font-size: 24rpx;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .border {
-  border: 2rpx solid;
+  border-width: 2rpx;
+  border-style: solid;
 }
 
 .border-t {
-  border-top: 2rpx solid;
+  border-top-width: 2rpx;
+  border-top-style: solid;
 }
 
 .border-gray-100 {
@@ -208,24 +182,26 @@ page {
   border-color: #d1d5db;
 }
 
-.rounded-lg {
-  border-radius: 16rpx;
+.pt-4 {
+  padding-top: 20rpx;
 }
 
-.rounded-full {
-  border-radius: 50%;
+.p-2 {
+  padding: 10rpx;
 }
 
-.avatar {
-  background: linear-gradient(135deg, #4F8EF7, #2F6AD9);
-  width: 96rpx;
-  height: 96rpx;
+.py-2 {
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
 }
 
-.input-field {
-  border: 2rpx solid #E5E7EB;
-  border-radius: 16rpx;
-  padding: 8rpx;
+.px-4 {
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+}
+
+.pl-10 {
+  padding-left: 50rpx;
 }
 
 .relative {
@@ -237,11 +213,32 @@ page {
 }
 
 .left-3 {
-  left: 12rpx;
+  left: 15rpx;
 }
 
 .top-3 {
-  top: 12rpx;
+  top: 15rpx;
+}
+
+/* 特殊样式 */
+.avatar {
+  background: linear-gradient(135deg, #4F8EF7, #2F6AD9);
+  transition: all 0.3s ease;
+}
+
+.avatar:active {
+  transform: scale(1.05);
+  box-shadow: 0 8rpx 24rpx rgba(47, 106, 217, 0.3);
+}
+
+.input-field {
+  transition: all 0.3s ease;
+  border: 2rpx solid #E5E7EB;
+}
+
+.input-field:focus {
+  border-color: #4F8EF7;
+  box-shadow: 0 0 0 6rpx rgba(79, 142, 247, 0.1);
 }
 
 .gender-btn {
@@ -254,18 +251,26 @@ page {
   border-color: #4F8EF7;
 }
 
+.gender-btn:active:not(.active) {
+  background-color: #F3F4F6;
+}
+
 .btn-primary {
   background: linear-gradient(135deg, #4F8EF7, #2F6AD9);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 8rpx 24rpx rgba(47, 106, 217, 0.3);
 }
 
 .edit-section {
   max-height: 0;
   overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.3s ease, transform 0.3s ease;
   opacity: 0;
-  transform: translateY(-10rpx);
-  transition-property: max-height, opacity, transform;
-  transition-duration: 0.5s, 0.3s, 0.3s;
-  transition-timing-function: ease;
+  transform: translateY(-20rpx);
 }
 
 .edit-section.active {
@@ -274,21 +279,46 @@ page {
   transform: translateY(0);
 }
 
-/* 移除自定义tab-bar样式，使用系统tabBar */
+/* 设置项样式 */
+.card .space-y-3 > view {
+  padding: 20rpx 16rpx;
+  border-radius: 12rpx;
+  transition: background-color 0.3s ease;
+}
 
+.card .space-y-3 > view:active {
+  background-color: #f9fafb;
+}
+
+/* 调整设置卡片中的图标样式 */
+.card .text-blue-500.mr-3 {
+  font-size: 40rpx;
+  display: inline-block;
+  width: 50rpx;
+  text-align: center;
+  margin-right: 20rpx !important;
+}
+
+/* 调整右侧箭头图标样式 */
+.card .icon-chevron-right {
+  font-size: 32rpx;
+  color: #9ca3af;
+}
+
+/* 提示框样式 */
 .toast {
   position: fixed;
-  bottom: 160rpx;
+  bottom: 200rpx;
   left: 50%;
   transform: translateX(-50%);
   background-color: #10b981;
   color: white;
   padding: 16rpx 32rpx;
   border-radius: 16rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.1);
   opacity: 0;
   transition: opacity 0.5s ease;
-  z-index: 2000;
+  z-index: 1000;
 }
 
 .toast.show {
