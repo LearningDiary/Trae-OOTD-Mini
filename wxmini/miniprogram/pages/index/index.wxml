@@ -81,6 +81,9 @@
     
     <!-- 底部标签栏由app.json的tabBar配置提供 -->
     
+    <!-- 在页面底部添加跳转按钮，但实际上这个按钮不会显示，因为底部标签栏由custom-tab-bar组件提供 -->
+    <button class="hidden" bindtap="navigateToProfile">跳转到我的页面</button>
+    
     <!-- OOTD 弹出层 -->
     <view class="popup {{showPopup ? 'show' : ''}}">
       <view class="popup-overlay" bindtap="closePopup"></view>

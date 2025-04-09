@@ -359,3 +359,8 @@ page {
   margin-top: 10rpx;
   color: #666;
 }
+
+/* 隐藏元素 */
+.hidden {
+  display: none;
+}
